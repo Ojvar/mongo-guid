@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  mongo-rs0-1:
+    image: "mongo:4.4.12"
+    command: --config /usr/src/configs/mongod.conf
+    ports:
+      - 40001:40001
+    volumes:
+      - ./mongod.conf:/usr/src/configs/mongod.conf
+      - ./data-01:/data/db:Z
+    depends_on:
+      - mongo-rs0-2
+      - mongo-rs0-3
+
+  mongo-rs0-2:
+    image: "mongo:4.4.12"
+    command: --config /usr/src/configs/mongod.conf
+    ports:
+      - 40002:40001
+    volumes:
+      - ./mongod.conf:/usr/src/configs/mongod.conf
+      - ./data-02:/data/db:Z
+
+  mongo-rs0-3:
+    image: "mongo:4.4.12"
+    command: --config /usr/src/configs/mongod.conf
+    ports:
+      - 40003:40001
+    volumes:
+      - ./mongod.conf:/usr/src/configs/mongod.conf
+      - ./data-03:/data/db:Z
+
+  setup-rs:
+    image: "setup-rs"
+    build: "./setup"
+    depends_on:
+      - "mongo-rs0-1"
